@@ -1,0 +1,79 @@
+.header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid #dbdbdb;
+  padding: 10px 0;
+  z-index: 100;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 975px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #262626;
+}
+
+.creative-logo {
+  font-family: 'Billabong', cursive;
+  font-size: 28px;
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.search-bar input {
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: 1px solid #dbdbdb;
+  background-color: #fafafa;
+  text-align: center;
+  width: 200px;
+}
+
+.nav-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-icon {
+  font-size: 24px;
+  color: #262626;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* أيقونات يمكن استبدالها بخط أيقونات أو SVG */
+.icon-home::before { content: "🏠"; }
+.icon-explore::before { content: "🔍"; }
+.icon-add::before { content: "➕"; }
+.icon-profile::before { content: "👤"; }
+.icon-logout::before { content: "🚪"; }
+
+/* وضع الظلام */
+.header.dark {
+  background-color: #121212;
+  border-color: #333;
+}
+
+.header.dark .logo,
+.header.dark .nav-icon {
+  color: #e0e0e0;
+}
+
+.header.dark .search-bar input {
+  background-color: #333;
+  border-color: #444;
+  color: #e0e0e0;
+}

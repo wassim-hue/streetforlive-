@@ -1,0 +1,28 @@
+.feed-container {
+  max-width: 614px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.stories-container {
+  display: flex;
+  gap: 15px;
+  padding: 16px;
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* وضع الظلام */
+.feed-container.dark .stories-container {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
