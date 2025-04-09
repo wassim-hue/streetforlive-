@@ -1,6 +1,6 @@
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
-const { protect } = require('../middleware/auth');
+const User = require('../models/User');
 
 // @desc    Add comment to post
 // @route   POST /api/posts/comment/:id
@@ -22,8 +22,12 @@ const addComment = async (req, res) => {
     post.comments.push(comment._id);
     await post.save();
     
-    res.status(201).json(comment);
+    // Populate user details in the response
+    const populatedComment = await Comment.findById(comment._id).populate('user', 'username image');
+    
+    res.status(201).json(populatedComment);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -33,13 +37,19 @@ const addComment = async (req, res) => {
 // @access  Private
 const deleteComment = async (req, res) => {
   try {
-    const comment = await Comment.findById(req.params.id);
+    const comment = await Comment.findById(req.params.id)
+      .populate('user', 'username image');
     
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
     
-    if (comment.user.toString() !== req.user._id.toString()) {
+    // Check if the user is the comment owner or the post owner
+    const post = await Post.findById(comment.post);
+    const isCommentOwner = comment.user._id.toString() === req.user._id.toString();
+    const isPostOwner = post.user.toString() === req.user._id.toString();
+    
+    if (!isCommentOwner && !isPostOwner) {
       return res.status(401).json({ message: 'Not authorized' });
     }
     
@@ -49,9 +59,10 @@ const deleteComment = async (req, res) => {
       { $pull: { comments: comment._id } }
     );
     
-    await comment.remove();
+    await Comment.deleteOne({ _id: comment._id });
     res.json({ message: 'Comment removed' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };

@@ -1,6 +1,6 @@
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
-const { protect } = require('../middleware/auth');
+const User = require('../models/User');
 
 // @desc    Create a post
 // @route   POST /api/posts
@@ -15,8 +15,12 @@ const createPost = async (req, res) => {
       image
     });
     
-    res.status(201).json(post);
+    // Populate user details in the response
+    const populatedPost = await Post.findById(post._id).populate('user', 'username image');
+    
+    res.status(201).json(populatedPost);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -27,11 +31,19 @@ const createPost = async (req, res) => {
 const getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate('user', 'username avatar')
+      .populate('user', 'username image')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username image'
+        }
+      })
       .sort({ createdAt: -1 });
       
     res.json(posts);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -42,8 +54,15 @@ const getPosts = async (req, res) => {
 const getPost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
-      .populate('user', 'username avatar')
-      .populate('comments');
+      .populate('user', 'username image bio')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username image'
+        }
+      })
+      .populate('likes', 'username image');
       
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
@@ -51,6 +70,7 @@ const getPost = async (req, res) => {
     
     res.json(post);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -70,9 +90,13 @@ const deletePost = async (req, res) => {
       return res.status(401).json({ message: 'Not authorized' });
     }
     
+    // Delete all comments associated with the post
+    await Comment.deleteMany({ post: post._id });
+    
     await post.remove();
     res.json({ message: 'Post removed' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -95,8 +119,12 @@ const likePost = async (req, res) => {
     post.likes.push(req.user._id);
     await post.save();
     
-    res.json(post);
+    // Populate likes for the response
+    const populatedPost = await Post.findById(post._id).populate('likes', 'username image');
+    
+    res.json(populatedPost);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -121,8 +149,13 @@ const unlikePost = async (req, res) => {
     );
     
     await post.save();
-    res.json(post);
+    
+    // Populate likes for the response
+    const populatedPost = await Post.findById(post._id).populate('likes', 'username image');
+    
+    res.json(populatedPost);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
