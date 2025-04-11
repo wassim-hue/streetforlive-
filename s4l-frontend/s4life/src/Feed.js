@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import Post from '../../components/Post/Post';
-import Story from '../../components/Story/Story';
+import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
+import Post from './Post.js';
+import Story from './storys';
 import './feed.css';
 
 function Feed() {

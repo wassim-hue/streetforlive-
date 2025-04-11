@@ -1,56 +1,89 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from './context/ThemeContext';
+import { 
+  FiHome, 
+  FiSearch, 
+  FiCompass, 
+  FiFilm, 
+  FiMessageCircle, 
+  FiHeart, 
+  FiPlusSquare, 
+  FiUser 
+} from 'react-icons/fi';
+import { 
+  FaHome, 
+  FaSearch, 
+  FaCompass, 
+  FaFilm, 
+  FaRegComment, 
+  FaRegHeart, 
+  FaPlusSquare, 
+  FaUser 
+} from 'react-icons/fa';
 import './sidebar.css';
-import { FaHome, FaUser, FaComments, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa'; // Correct imports
 
-const Sidebar = () => {
+function Sidebar() {
+  const { darkMode } = useTheme();
+  const location = useLocation();
+  const Icons = darkMode ? Fa : Fi; // Use filled icons in dark mode
+
+  const navItems = [
+    { icon: <Icons.Home size={24} />, label: 'Home', path: '/feed' },
+    { icon: <Icons.Search size={24} />, label: 'Search', path: '/explore' },
+    { icon: <Icons.Compass size={24} />, label: 'Explore', path: '/explore' },
+    { icon: <Icons.Film size={24} />, label: 'Reels', path: '/reels' },
+    { icon: <Icons.MessageCircle size={24} />, label: 'Messages', path: '/direct' },
+    { icon: <Icons.Heart size={24} />, label: 'Notifications', path: '/activity' },
+    { icon: <Icons.PlusSquare size={24} />, label: 'Create', path: '/create-post' },
+    { icon: <Icons.User size={24} />, label: 'Profile', path: '/profile' }
+  ];
+
   return (
-    <aside className="sidebar">
-      {/* Logo */}
+    <div className="sidebar">
       <div className="sidebar-logo">
-        <img
-          src="https://via.placeholder.com/150x50/000000/FFFFFF/?text=Logo"
-          alt="Logo"
-          className="sidebar-logo-img"
-        />
+        <Link to="/feed">
+          {darkMode ? (
+            <img 
+              src="/instagram-white-logo.png" 
+              alt="Instagram" 
+              className="sidebar-logo-img" 
+            />
+          ) : (
+            <img 
+              src="/instagram-logo.png" 
+              alt="Instagram" 
+              className="sidebar-logo-img" 
+            />
+          )}
+        </Link>
       </div>
 
-      {/* Navigation Menu */}
       <nav className="sidebar-nav">
-        <SidebarSection title="Main">
-          <NavItem icon={<FaHome size={20} />} label="Home" />
-          <NavItem icon={<FaUser size={20} />} label="Profile" />
-          <NavItem icon={<FaComments size={20} />} label="Messages" />
-        </SidebarSection>
-
-        <SidebarSection title="Groups">
-          <NavItem icon={<FaUsers size={20} />} label="Friends" />
-        </SidebarSection>
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
+          >
+            <span className="sidebar-item-icon">
+              {item.icon}
+            </span>
+            <span className="sidebar-item-label">{item.label}</span>
+          </Link>
+        ))}
       </nav>
 
-      {/* Footer */}
       <div className="sidebar-footer">
-        <NavItem icon={<FaCog size={20} />} label="Settings" />
-        <NavItem icon={<FaSignOutAlt size={20} />} label="Logout" />
+        <Link to="/more" className="sidebar-item">
+          <span className="sidebar-item-icon">
+            <Icons.Menu size={24} />
+          </span>
+          <span className="sidebar-item-label">More</span>
+        </Link>
       </div>
-    </aside>
+    </div>
   );
-};
-
-// Reusable Nav Item Component
-const NavItem = ({ icon, label }) => (
-  <a href="#" className="sidebar-item">
-    {icon}
-    <span className="sidebar-item-label">{label}</span>
-  </a>
-);
-
-// Section Wrapper
-const SidebarSection = ({ title, children }) => (
-  <div className="sidebar-section">
-    <h4 className="sidebar-title">{title}</h4>
-    {children}
-  </div>
-);
+}
 
 export default Sidebar;
-

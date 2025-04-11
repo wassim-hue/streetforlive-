@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext();
 
-export function ThemeProvider({ children }) {
+const ThemeProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode ? JSON.parse(savedMode) : false;
@@ -10,24 +10,31 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
-    if (darkMode) {
-      document.documentElement.classList.add('dark-mode');
-    } else {
-      document.documentElement.classList.remove('dark-mode');
-    }
+    document.documentElement.classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
   const toggleTheme = () => {
-    setDarkMode(!darkMode);
+    setDarkMode(prev => !prev);
   };
 
+  const value = { darkMode, toggleTheme };
+
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
-}
+};
 
-export function useTheme() {
-  return useContext(ThemeContext);
-}
+const useTheme = () => useContext(ThemeContext);
+const ThemeToggle = () => {
+  const { darkMode, toggleTheme } = useTheme();
+
+  return (
+    <button onClick={toggleTheme} className="theme-toggle">
+      {darkMode ? '🌙' : '☀️'}
+    </button>
+  );
+};
+
+export { ThemeProvider, useTheme, ThemeToggle };

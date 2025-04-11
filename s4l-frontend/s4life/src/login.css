@@ -214,13 +214,13 @@
   background-size: cover;
 }
 
-.app-store {
+/* .app-store {
   background-image: url('../../assets/images/app-store.png');
-}
+} */
 
-.google-play {
+/* .google-play {
   background-image: url('../../assets/images/google-play.png');
-}
+} */
 
 /* Dark mode styles */
 .login-page.dark {
