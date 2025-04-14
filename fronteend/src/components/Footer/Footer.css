@@ -1,0 +1,35 @@
+/* Footer.css */
+.ig-footer {
+  max-width: 975px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.ig-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ig-footer-links a {
+  color: #8e8e8e;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.dark .ig-footer-links a {
+  color: #a8a8a8;
+}
+
+.ig-footer-copyright {
+  color: #8e8e8e;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.dark .ig-footer-copyright {
+  color: #a8a8a8;
+}
